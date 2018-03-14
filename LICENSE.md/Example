@@ -1,0 +1,102 @@
+//malloc 必须要计算字节数，并且在返回后强行转换为实际类型的指针。
+
+//正常程序
+typedef struct data_type{
+ 
+ 
+    int age;
+     
+ 
+    char name[20];
+    
+ 
+}data;
+ 
+ 
+data*bob=NULL;
+   
+     
+bob=(data*)malloc(sizeof(data));
+ 
+ 
+if(bob!=NULL)
+{
+ 
+ 
+    bob->age=22;
+         
+ 
+    strcpy(bob->name,"Robert");
+    
+         
+    printf("%sis%dyearsold\n",bob->name,bob->age);
+ 
+ 
+}
+    
+     
+else
+ 
+{
+ 
+    printf("mallocerror!\n");
+         
+    exit(-1);
+    
+}
+     
+     
+free(bob);
+ 
+bob=NULL;
+
+
+/***********(?)内存泄露实例：***********/
+
+//例1：
+#include <stdio.h>
+#include <malloc.h>
+#define MAX 100000000
+ 
+int main(void)
+{
+    int *a[MAX] = {NULL};
+    int i;
+    for(i=0;i<MAX;i++)
+    {
+    a[i]=(int*)malloc(MAX);
+    }
+    return 0;
+}
+
+//例2：
+#include "stdio.h"
+ 
+#include "malloc.h"//malloc()函数被包含在malloc.h里面
+ 
+ 
+int main(void)
+{
+ 
+    char *a = NULL;//声明一个指向a的char*类型的指针
+         
+    a = (char*)malloc(100*sizeof(char));//使用malloc分配内存的首地址，然后赋值给a
+ 
+    if(!a)//如果malloc失败，可以得到一些log
+         
+    {
+        perror("malloc");
+        return -1;
+    }
+ 
+    sprintf(a,"%s","HelloWorld\n");//"HelloWorld\n"写入a指向的地址
+     
+    printf("%s\n",a);//输出用户输入的数据
+     
+    free(a);//释放掉使用的内存地址
+ 
+    return 0;//例2有无内存泄露？
+  
+}
+ 
+//注：例1：对malloc申请之后没有检测返回值；例2：检测malloc返回值条件有误（例2是对的吧？）。
